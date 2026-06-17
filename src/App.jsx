@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getDb } from './db'
-import { supabase } from './supabase'
+import { supabase, supabaseReady } from './supabase'
 import Caixa from './views/Caixa'
 import NovoParticipante from './views/NovoParticipante'
 import Catalogo from './views/Catalogo'
@@ -19,6 +19,7 @@ export default function App() {
   const reload = () => setRefresh((x) => x + 1)
 
   useEffect(() => {
+    if (!supabaseReady) return
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session)
       setAuthPronto(true)
@@ -38,6 +39,21 @@ export default function App() {
     setParticipanteId(pid)
     setView(v)
   }
+
+  if (!supabaseReady)
+    return (
+      <div className="login-wrap">
+        <div className="painel login-card">
+          <h2>Configuração ausente</h2>
+          <p>
+            As variáveis <code>VITE_SUPABASE_URL</code> e{' '}
+            <code>VITE_SUPABASE_ANON_KEY</code> não foram definidas no build.
+            Configure-as na Vercel (Settings → Environment Variables) e faça um
+            novo deploy.
+          </p>
+        </div>
+      </div>
+    )
 
   if (!authPronto) return <div className="app"><p>Carregando…</p></div>
   if (!session) return <Login />
