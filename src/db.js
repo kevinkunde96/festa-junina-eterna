@@ -126,5 +126,53 @@ export async function listarExtrato(participanteId) {
   return data.map(mapTransacao)
 }
 
+// --------------------------------------------------------------------
+// Dashboard / relatório da festa
+// --------------------------------------------------------------------
+export async function getDashboard() {
+  const [txRes, partRes] = await Promise.all([
+    supabase.from('transacoes').select('*').order('data', { ascending: false }),
+    supabase.from('participantes').select('*'),
+  ])
+  const txs = check(txRes).map(mapTransacao)
+  const participantes = check(partRes).map(mapParticipante)
+
+  let totalRecargas = 0
+  let totalConsumo = 0
+  let nRecargas = 0
+  let nConsumos = 0
+  const porItem = new Map()
+
+  for (const t of txs) {
+    if (t.tipo === 'RECARGA') {
+      totalRecargas += t.valor || 0
+      nRecargas++
+    } else {
+      totalConsumo += t.total || 0
+      nConsumos++
+      for (const i of t.itens || []) {
+        const key = i.itemId || i.nome
+        const cur = porItem.get(key) || { nome: i.nome, qtd: 0, receita: 0 }
+        cur.qtd += Number(i.qtd) || 0
+        cur.receita += (Number(i.preco) || 0) * (Number(i.qtd) || 0)
+        porItem.set(key, cur)
+      }
+    }
+  }
+
+  const itensVendidos = [...porItem.values()].sort((a, b) => b.receita - a.receita)
+
+  return {
+    totalRecargas,
+    totalConsumo,
+    saldoEmAberto: participantes.reduce((s, p) => s + p.saldo, 0),
+    nParticipantes: participantes.length,
+    nRecargas,
+    nConsumos,
+    itensVendidos,
+    qtdItensVendidos: itensVendidos.reduce((s, i) => s + i.qtd, 0),
+  }
+}
+
 export const fmtBRL = (v) =>
   (Number(v) || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })

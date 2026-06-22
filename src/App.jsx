@@ -6,6 +6,7 @@ import NovoParticipante from './views/NovoParticipante'
 import Catalogo from './views/Catalogo'
 import Consumo from './views/Consumo'
 import Extrato from './views/Extrato'
+import Dashboard from './views/Dashboard'
 import Login from './views/Login'
 
 export default function App() {
@@ -69,6 +70,7 @@ export default function App() {
         <nav>
           <button className={view === 'caixa' ? 'on' : ''} onClick={() => go('caixa')}>Caixa</button>
           <button className={view === 'catalogo' ? 'on' : ''} onClick={() => go('catalogo')}>Catálogo</button>
+          <button className={view === 'dashboard' ? 'on' : ''} onClick={() => go('dashboard')}>Dashboard</button>
           <button className="sair" onClick={() => supabase.auth.signOut()}>Sair</button>
         </nav>
       </header>
@@ -78,6 +80,7 @@ export default function App() {
         {view === 'catalogo' && <Catalogo db={db} onChange={reload} />}
         {view === 'consumo' && <Consumo db={db} participanteId={participanteId} onDone={() => { reload(); go('caixa', participanteId) }} onCancel={() => go('caixa', participanteId)} />}
         {view === 'extrato' && <Extrato db={db} participanteId={participanteId} onBack={() => go('caixa', participanteId)} />}
+        {view === 'dashboard' && <Dashboard />}
       </main>
     </div>
   )

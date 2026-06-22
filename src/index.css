@@ -268,6 +268,37 @@ label {
 .sub li { padding: 0; border: 0; display: flex; justify-content: space-between; background: transparent; }
 .sub li span { color: #64748b; }
 
+/* ===== Dashboard ===== */
+.dashboard .dash-sub { color: var(--verde-escuro); margin: 1.5rem 0 .75rem; }
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: .75rem;
+}
+.card {
+  display: flex; flex-direction: column; gap: .25rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--borda);
+  border-radius: 12px;
+  background: linear-gradient(180deg, #f0fdf4, #fff);
+}
+.card.milho { background: linear-gradient(180deg, #fef9c3, #fff); }
+.card-titulo { font-size: .8rem; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: .03em; }
+.card-valor { font-size: 1.8rem; font-weight: 800; color: var(--verde-escuro); }
+.card.milho .card-valor { color: #92400e; }
+.card-sub { font-size: .85rem; color: #64748b; }
+
+.tabela-vendas { width: 100%; border-collapse: collapse; }
+.tabela-vendas th, .tabela-vendas td {
+  padding: .6rem .75rem;
+  border-bottom: 1px solid var(--borda);
+  text-align: left;
+}
+.tabela-vendas th { color: var(--verde-escuro); font-size: .85rem; text-transform: uppercase; letter-spacing: .03em; }
+.tabela-vendas .num { text-align: right; }
+.tabela-vendas tbody tr:hover { background: #f0fdf4; }
+.tabela-vendas tfoot td { font-weight: 800; color: var(--verde-escuro); border-top: 2px solid var(--verde-folha); border-bottom: 0; }
+
 @media (max-width: 900px) {
   .caixa, .catalogo, .consumo { grid-template-columns: 1fr; }
 }
